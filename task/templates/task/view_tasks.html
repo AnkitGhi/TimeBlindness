@@ -1,0 +1,54 @@
+{% extends "./base.html" %}
+{% load tailwind_filters %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">My Tasks</h1>
+    
+    {% if tasks %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for task in tasks %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                    <div class="p-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">{{ task.task_type }}</span>
+                            <!-- Add task date if available -->
+                            {% if task.due_date %}
+                                <span class="text-gray-500 text-sm">Due: {{ task.due_date }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">{{ task.task_name }}</h3>
+                        
+                        {% if task.description %}
+                            <p class="text-gray-600 mb-4">{{ task.description }}</p>
+                        {% endif %}
+                        
+                        <div class="flex justify-between mt-4">
+                            <form action="{% url 'submit_task' task.id %}" method="post" class="inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="task_id" value="{{ task.id }}">
+                                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md transition-colors duration-300">
+                                    Mark Complete
+                                </button>
+                            </form>
+                            
+                            <form action="#" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-md transition-colors duration-300">
+                                    Abandon
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-gray-50 rounded-lg p-8 text-center">
+            <p class="text-gray-600 text-lg">No tasks available.</p>
+            <a href="{% url 'register task' %}" class="inline-block mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-md transition-colors duration-300">Create New Task</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
