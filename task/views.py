@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import Data_provide, Submission_Provide
-from .models import Task_register, Task_complete
+from .models import Task_register, Task_complete, TaskSummary
 from django.contrib.auth .decorators import login_required
 
 @login_required
@@ -13,9 +13,9 @@ def task_register(request):
     if request.method == 'POST':
         form = Data_provide(request.POST)
         if form.is_valid():
-            # Associate task with current user
+
             task = form.save(commit=False)
-            task.user = request.user  # 👈 Critical line
+            task.user = request.user  
             task.save()
             return redirect('take_me_home') 
         else:
@@ -32,6 +32,7 @@ def task_completion(request,task_id):
     if request.method == 'POST':
         form = Submission_Provide(request.POST)
         if form.is_valid():
+
             task_complete = form.save(commit=False)
             task_complete.user = request.user
             task_complete.task_bridge = task
@@ -41,26 +42,6 @@ def task_completion(request,task_id):
         # Display the form to complete the task
         form = Submission_Provide()
     return render(request, 'task/submit.html', {'form': form, 'task': task})
-    
-
-    # Get only current user's tasks
-    # user_tasks = Task_register.objects.filter(user=request.user)
-    
-    # if request.method == 'POST':
-    #     form = Submission_Provide(request.POST)
-    #     # Limit task choices to user's tasks
-    #     form.fields['task'].queryset = user_tasks  # 👈 Security critical
-    #     if form.is_valid():
-    #         submission = form.save()
-    #         return redirect('view_tasks')
-    # else:
-    #     form = Submission_Provide()
-    #     # Initialize form with filtered tasks
-    #     form.fields['task'].queryset = user_tasks  # 👈 User-specific choices
-    
-    # return render(request, "task/submit.html", {'form': form})
-
-
 
 @login_required
 def view_tasks(request):
