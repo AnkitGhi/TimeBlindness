@@ -60,6 +60,20 @@ class TaskSummary(models.Model):
     def __str__(self):
         return f"{self.task_name} - {self.user.username}"
     
+class Analytics(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    average_time_completion = models.IntegerField()
+    no_task_completed = models.IntegerField()
+    no_task_remaining = models.IntegerField()
+    average_motivation = models.IntegerField()
+    average_seatings = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.user.username}"
+
+
+
+    
     
 
 
