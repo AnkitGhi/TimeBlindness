@@ -63,6 +63,7 @@ class TaskSummary(models.Model):
 class Analytics(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     average_time_completion = models.IntegerField()
+    average_time_estimated = models.IntegerField()
     no_task_completed = models.IntegerField()
     no_task_remaining = models.IntegerField()
     average_motivation = models.IntegerField()
